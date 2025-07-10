@@ -1,30 +1,38 @@
-const express =require('express');
+const express = require('express');
 const app = express();
-const {error} = {console};
-
-const PORT =3000;
-
-app.use(express.json())
+const PORT = 5000;
+app.use(express.json());
 
 app.get('/',(req,res)=>{
-    return res.send({message:"Server is running Fine!"})
-})
+    res.send("Hello, server is running");
+});
+app.listen(PORT,()=>{
+    console.log(`server is runnig at http://localhost:${PORT}`);
+});
 
-app.post('/signup',(req,res)=>{
-    const {Email,Password}=req.body;
-
-    if(!Email){
-        res.json({message:"Email cannot be empty"})
+app.post('/signup',(res,req)=>{
+    const {userName,email,password,dateOfBirth} = req.body;
+    if (!userName){
+        return res.status(400).json({error:"Username cannot be empty"});
     }
-    if(Password.length() < 8 || Password.length() > 16 ){
-        res.json({message:"Password length should be greater than 8 or less than or equal to 16"})
+    if (!email){
+        return res.status(400).json({error:"Email cannot be empty"});
     }
-
-    else{
-        res.status(200).json({message:"User Signup is Successful!"})
+    if (!password){
+        return res.status(400).json({error:"Password cannot be empty"});
     }
-})
-
-app.listen(PORT,
-    console.log(`Server is running on http://localhost:${PORT}`)
-)
+    if(!dateOfBirth){
+        return res.status(400).json({error:"Dateofbirth cannot be empty"});
+    }
+    if(password.length<8 || password.length>16){
+        return res.status(400).json({error:"password length should be greater than 8 and less than 16"});
+    }
+    res.status(201).json({
+        message:"user signed up",
+        user:{
+            userName,
+            email,
+            dateOfBirth
+        }
+    });
+});
